@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Task Manager App</title>
+
+  <!-- Bootstrap & FontAwesome -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-image: url('https://images.unsplash.com/photo-1517694712202-14dd9538aa97');
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      background-position: center;
+      color: #333;
+    }
+
+    nav {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: rgba(0, 0, 0, 0.7);
+      padding: 2rem;
+    }
+
+    nav a {
+      color: skyblue;
+      font-weight: bold;
+      margin: 0 1rem;
+      text-decoration: none;
+      cursor: pointer;
+      outline-offset: 2px;
+    }
+
+    nav a:hover,
+    nav a:focus {
+      text-decoration: underline;
+      outline: 2px solid skyblue;
+      outline-offset: 4px;
+    }
+
+    .grid-container {
+      display: grid;
+      gap: 2rem;
+      padding: 2rem;
+      max-width: 900px;
+      margin: auto;
+    }
+    
+  .card-section {
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 10px;
+  padding: 2rem; 
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  min-width: 750px; 
+  min-height: 300px;
+}
+    .section {
+      display: none;
+    }
+
+    .active {
+      display: block;
+    }
+
+    .checked {
+      text-decoration: line-through;
+      color: gray;
+    }
+
+    .delete-icon {
+      color: black;
+      margin-left: 10px
+    }
+
+    .delete-icon:hover {
+      color: red;
+    }
+
+    .createtask-input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+
+    .createtask-input:focus {
+      border-color: #007bff;
+      outline: none;
+      box-shadow: 0 0 5px rgba(0,123,255,0.5);
+    }
+
+    .label-element {
+      padding-left: 10px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    @media (max-width: 768px) {
+      .grid-container {
+        grid-template-columns: 1fr;
+        padding: 1rem;
+      }
+
+      nav {
+        flex-direction: column;
+      }
+
+      nav a {
+        margin: 0.5rem 0;
+      }
+    
+      }
+
+
+      .contact-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 500px;
+}
+
+#contactForm {
+  max-width: 100%;
+  width: 100%;
+}
+
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav>
+    <a href="#" onclick="showSection('contact'); return false;">Contact Form</a>
+    <a href="#" onclick="showSection('todo'); return false;">To-Do List</a>
+  </nav>
+
+  <!-- Grid Layout -->
+  <div class="grid-container">
+    <!-- Contact Form -->
+    <div id="contact" class="section card-section active">
+      <h2>Contact Us</h2>
+      <form id="contactForm" novalidate>
+        <input type="text" id="name" class="form-control mb-2" placeholder="Name"  />
+        <input type="email" id="email" class="form-control mb-2" placeholder="Email" />
+        <textarea id="message" class="form-control mb-2" placeholder="Type your message, feedback, or questions here"></textarea>
+        <div class="text-danger mb-2" id="formError"></div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+    </div>
+
+    <!-- To-Do List -->
+    <div id="todo" class="section card-section">
+      <h2 class="text-center">Todos</h2>
+      <h4><span class="text-primary">Create</span> Task</h4>
+      <input type="text" id="todoInput" class="createtask-input" placeholder="Enter your to-do item" />
+      <button id="addTaskBtn" class="btn btn-success mb-3">Add</button>
+
+      <h4><span class="text-primary">My</span> Tasks</h4>
+      <ul id="todoContainer" class="list-unstyled"></ul>
+      <button id="saveBtn" class="btn btn-primary mt-3">Save Changes</button>
+    </div>
+  </div>
+
+  <!-- FontAwesome -->
+  <script src="https://kit.fontawesome.com/ac42c3b1f7.js" crossorigin="anonymous"></script>
+
+  <!-- JavaScript -->
+  <script>
+    // Section Toggle
+    function showSection(id) {
+      document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+
+    // Contact Form Validation
+    document.getElementById("contactForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const message = document.getElementById("message").value.trim();
+      const errorDiv = document.getElementById("formError");
+      // Correct email regex (removed unnecessary double backslashes)
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+      if (!name || !email || !message) {
+        errorDiv.textContent = "Please fill all fields.";
+      } else if (!emailRegex.test(email)) {
+        errorDiv.textContent = "Please enter a valid email address.";
+      } else {
+        errorDiv.textContent = "";
+        alert("Form submitted successfully!");
+        this.reset();
+      }
+    });
+
+    // To-Do List Logic
+    const todoInput = document.getElementById("todoInput");
+    const addTaskBtn = document.getElementById("addTaskBtn");
+    const todoContainer = document.getElementById("todoContainer");
+    let todoList = JSON.parse(localStorage.getItem("todoList")) || [];
+
+    function saveTodos() {
+      localStorage.setItem("todoList", JSON.stringify(todoList));
+    }
+
+    function toggleTask(checkboxId, labelId, todoId) {
+      const label = document.getElementById(labelId);
+      label.classList.toggle("checked");
+
+      const index = todoList.findIndex(item => "todo" + item.unique === todoId);
+      if (index !== -1) {
+        todoList[index].isChecked = !todoList[index].isChecked;
+        saveTodos();  // Save immediately after toggle
+      }
+    }
+
+    function deleteTask(todoId) {
+      const element = document.getElementById(todoId);
+      if (element) {
+        todoContainer.removeChild(element);
+      }
+      todoList = todoList.filter(item => "todo" + item.unique !== todoId);
+      saveTodos();  // Save after deletion
+    }
+
+    function createTaskElement(todo) {
+      const checkboxId = "checkbox" + todo.unique;
+      const labelId = "label" + todo.unique;
+      const todoId = "todo" + todo.unique;
+
+      const li = document.createElement("li");
+      li.id = todoId;
+      li.className = "d-flex align-items-center mb-2";
+
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.id = checkboxId;
+      checkbox.checked = todo.isChecked;
+      checkbox.onclick = () => toggleTask(checkboxId, labelId, todoId);
+      checkbox.setAttribute('aria-label', `Mark task "${todo.text}" as done`);
+
+      const label = document.createElement("label");
+      label.setAttribute("for", checkboxId);
+      label.id = labelId;
+      label.className = "flex-grow-1 label-element";
+      label.textContent = todo.text;
+      if (todo.isChecked) label.classList.add("checked");
+
+      const deleteIcon = document.createElement("i");
+      deleteIcon.className = "fas fa-trash-alt delete-icon";
+      deleteIcon.title = "Delete task";
+      deleteIcon.onclick = () => deleteTask(todoId);
+      deleteIcon.onkeypress = (e) => { if(e.key === "Enter" || e.key === " ") deleteTask(todoId); };
+
+      li.appendChild(checkbox);
+      li.appendChild(label);
+      li.appendChild(deleteIcon);
+
+      todoContainer.appendChild(li);
+    }
+
+    function addTask() {
+      const taskText = todoInput.value.trim();
+      if (taskText === "") {
+        alert("Enter valid text");
+        return;
+      }
+
+      const newTodo = {
+        text: taskText,
+        unique: Date.now(),
+        isChecked: false
+      };
+
+      todoList.push(newTodo);
+      createTaskElement(newTodo);
+      todoInput.value = "";
+      todoInput.focus();
+      saveTodos();
+    }
+
+    // Initial Render
+    todoList.forEach(createTaskElement);
+    addTaskBtn.onclick = addTask;
+
+    // Add task on Enter key press in input
+    todoInput.addEventListener("keydown", function(e){
+      if(e.key === "Enter"){
+        addTask();
+        e.preventDefault();
+      }
+    });
+
+    document.getElementById("saveBtn").onclick = () => {
+      saveTodos();
+      alert("Tasks saved successfully!");
+    };
+  </script>
+</body>
+</html>
