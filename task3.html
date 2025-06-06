@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Web Wizard: Quiz & Giggle</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background-size: cover;
+      padding: 20px;
+      color: #333;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background: rgba(255, 255, 255, 0.97);
+      padding: 30px 25px;
+      border-radius: 15px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 2.5em;
+      margin-bottom: 10px;
+      color: #2c3e50;
+      text-shadow: 0 0 8px rgba(0,123,255,0.6);
+    }
+
+    h2 {
+      text-align: center;
+      font-size: 1.6em;
+      color: #333;
+      margin-top: 20px;
+    }
+
+    .quiz, .joke {
+      margin-top: 30px;
+    }
+
+    .question {
+      margin-bottom: 20px;
+      font-weight: 600;
+    }
+
+    .options button {
+      display: block;
+      width: 100%;
+      margin: 8px 0;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      background: linear-gradient(90deg, #007bff, #00c6ff);
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .options button:hover {
+      box-shadow: 0 4px 12px rgba(0, 123, 255, 0.4);
+    }
+
+    .correct {
+      background: linear-gradient(90deg, #28a745, #60d394) !important;
+    }
+
+    .wrong {
+      background: linear-gradient(90deg, #dc3545, #ff6f61) !important;
+    }
+
+    .feedback {
+      font-weight: bold;
+      margin-top: 10px;
+      font-size: 1.1em;
+    }
+
+    #jokeText {
+      background: #f1f1f1;
+      padding: 15px;
+      border-radius: 8px;
+      font-style: italic;
+      font-size: 1em;
+      color: #555;
+      margin-bottom: 10px;
+    }
+
+    .timer {
+      text-align: right;
+      font-weight: 600;
+      color: #007bff;
+      margin-top: -10px;
+      margin-bottom: 15px;
+    }
+
+    button {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(90deg, #007bff, #00c6ff);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    button:hover {
+      box-shadow: 0 4px 12px rgba(0, 123, 255, 0.4);
+    }
+
+    @media (max-width: 768px) {
+      .options button {
+        font-size: 14px;
+        padding: 10px;
+      }
+
+      h1 {
+        font-size: 2em;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .options button {
+        padding: 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Web Wizard: Quiz & Giggle</h1>
+
+    <!-- Quiz Section -->
+    <div class="quiz">
+      <h2>Quiz Time</h2>
+      <div class="timer" id="timer">Time: 10s</div>
+      <div id="quizContainer"></div>
+    </div>
+
+    <!-- Joke API Section -->
+    <div class="joke">
+      <h2>Want a Joke?</h2>
+      <p id="jokeText">Click the button below to see a joke!</p>
+      <button onclick="getJoke()">Tell Me a Joke</button>
+    </div>
+  </div>
+
+  <script>
+    const originalQuestions = [
+      {
+        question: "1. Which language is used to style web pages?",
+        options: ["CSS", "HTML", "Python"],
+        correct: 0
+      },
+      {
+        question: "2. What does JS stand for?",
+        options: ["Java Syntax", "Jumbo Script", "JavaScript"],
+        correct: 2
+      },
+      {
+        question: "3. Which HTML tag is used for links?",
+        options: ["<img>", "<a>", "<link>"],
+        correct: 1
+      },
+      {
+        question: "4. Which of these is a JavaScript data type?",
+        options: ["integer", "boolean", "decimal"],
+        correct: 1
+      },
+      {
+        question: "5. What does CSS stand for?",
+        options: ["Color Style Sheet", "Cascading Style Sheets", "Creative Style Syntax"],
+        correct: 1
+      }
+    ];
+
+    let questions = [...originalQuestions];
+    let currentQuestion = 0;
+    let score = 0;
+    let countdown;
+    let timeLeft = 10;
+    let feedbackElem; // To be reused in timer
+
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    function startTimer() {
+      timeLeft = 10;
+      document.getElementById('timer').textContent = `Time: ${timeLeft}s`;
+      countdown = setInterval(() => {
+        timeLeft--;
+        document.getElementById('timer').textContent = `Time: ${timeLeft}s`;
+        if (timeLeft <= 0) {
+          clearInterval(countdown);
+          handleAnswer(null, true, null, questions[currentQuestion].correct, feedbackElem);
+        }
+      }, 1000);
+    }
+
+    function loadQuestion() {
+      clearInterval(countdown);
+      const container = document.getElementById('quizContainer');
+      container.innerHTML = "";
+
+      if (currentQuestion < questions.length) {
+        const q = questions[currentQuestion];
+        const questionElem = document.createElement("div");
+        questionElem.className = "question";
+        questionElem.innerHTML = `<p>${q.question}</p>`;
+
+        const optionsElem = document.createElement("div");
+        optionsElem.className = "options";
+
+        feedbackElem = document.createElement("p");
+        feedbackElem.className = "feedback";
+
+        q.options.forEach((opt, i) => {
+          const btn = document.createElement("button");
+          btn.textContent = opt;
+          btn.onclick = () => handleAnswer(i, false, btn, q.correct, feedbackElem);
+          optionsElem.appendChild(btn);
+        });
+
+        questionElem.appendChild(optionsElem);
+        questionElem.appendChild(feedbackElem);
+        container.appendChild(questionElem);
+
+        startTimer();
+      } else {
+        showResult();
+      }
+    }
+
+    function handleAnswer(selected, timeUp = false, clickedBtn = null, correctIndex = null, feedbackElem = null) {
+      clearInterval(countdown);
+      const currentQ = questions[currentQuestion];
+      const correct = correctIndex !== null ? correctIndex : currentQ.correct;
+      const buttons = document.querySelectorAll('.options button');
+
+      buttons.forEach((btn, index) => {
+        btn.disabled = true;
+        if (index === correct) btn.classList.add("correct");
+        else if (selected === index) btn.classList.add("wrong");
+      });
+
+      if (selected === correct) {
+        score++;
+        feedbackElem.textContent = " Correct!";
+        feedbackElem.style.color = "green";
+      } else {
+        feedbackElem.textContent = timeUp ? " Time's up!" : " Wrong!";
+        feedbackElem.style.color = "red";
+      }
+
+      setTimeout(() => {
+        currentQuestion++;
+        loadQuestion();
+      }, 1500);
+    }
+
+    function showResult() {
+      document.getElementById('timer').style.display = "none";
+      const container = document.getElementById('quizContainer');
+      container.innerHTML = `
+        <h3 style="text-align:center;"> Your Score: ${score} / ${questions.length}</h3>
+        <div style="text-align:center;">
+          <button onclick="restartQuiz()">Restart Quiz</button>
+        </div>
+      `;
+    }
+
+    function restartQuiz() {
+      questions = shuffleArray([...originalQuestions]);
+      currentQuestion = 0;
+      score = 0;
+      document.getElementById('timer').style.display = "block";
+      loadQuestion();
+    }
+
+    function getJoke() {
+      fetch('https://icanhazdadjoke.com/', {
+        headers: { 'Accept': 'application/json' }
+      })
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('jokeText').textContent = data.joke;
+      })
+      .catch(() => {
+        document.getElementById('jokeText').textContent = "Couldn't fetch joke. Try again!";
+      });
+    }
+
+    // Start Quiz
+    questions = shuffleArray(questions);
+    loadQuestion();
+  </script>
+</body>
+</html>
