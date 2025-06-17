@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Vijaya's Portfolio</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+        .main {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        nav {
+            background-color: #0d2436;
+            display: flex;
+            justify-content: center;
+            padding: 15px;
+        }
+        a {
+            margin-left: 40px;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none; 
+        }
+        .main-content {
+            display: flex;
+            justify-content: center;
+            flex-grow: 1;
+            padding: 10px;
+            background-color: #e8edf9;
+        }
+        .card {
+            padding: 10px;
+            border-radius: 10px;
+            background-color: #f6f8fa;
+            max-width: 70%;
+            align-self: flex-start;
+        }
+        .hidden {
+            display: none;
+        }
+        @media (min-width: 900px) {
+            .card {
+                width: 40%;
+            }
+        }
+        .About-para {
+            color: navy;
+            font-family: "Roboto", sans-serif; 
+            font-size: 20px;
+        }
+        h1{
+            text-align: center;
+            color:#08a6e5;
+            font-family: "Roboto", sans-serif;
+            font-weight: 400;
+        }
+        .project-button-container{
+            display: flex;
+            flex-direction: column;
+            min-width:70%;
+            align-items: center;
+        }
+        .project-button{
+            width:250px;
+            height:50px;
+            border-width:0px;
+            margin:10px;
+            background-color:rgb(38, 181, 237);
+            border-radius: 5px;
+            padding:5px;
+            color:white;
+            cursor: pointer;
+        }
+        h2{
+            color:#08a6e5;
+            font-family: "Roboto", sans-serif;
+            font-size: 25px;
+        }
+        span{
+            color:black;
+            font-family: "Roboto", sans-serif;
+            font-size: 25px;
+            font-weight: 400;
+        }
+        label{
+            color:#0d2436;
+            font-size: 20px;
+            font-family: "Roboto", sans-serif;
+        }
+        input[type="text"] { 
+            padding: 5px;
+            border-radius: 3px;
+            font-size: 15px;
+            font-family: "Roboto", sans-serif;
+            width:70%;
+            border: 1px solid #ccc;
+        }
+        .add-butn{
+            background-color: green;
+            color:white;
+            border-width: 0px;
+            border-radius: 3px;
+            cursor: pointer;
+            padding: 10px 15px;
+        }
+        .catalog-align{
+            display: flex;
+            flex-direction: column;
+        }
+        select{
+            padding:5px;
+            font-size: 15px;
+            font-family: "Roboto", sans-serif;
+            width:50%;
+            margin-bottom: 15px; 
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            color: black;
+            font-family: "Roboto", sans-serif;
+            font-size: 15px;
+            display: flex; 
+            align-items: center; 
+            margin-bottom: 8px; 
+        }
+        li input[type="checkbox"] {
+            margin-right: 10px;
+        }
+        li .label-element {
+            flex-grow: 1;
+        }
+        li .checked {
+            text-decoration: line-through;
+            color: #888;
+        }
+        .delete-icon {
+            color: #e74c3c;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        .contact {
+            color: skyblue;
+            font-size: 15px;
+            text-decoration: none;
+        }
+        .contact:hover {
+            text-decoration: underline;
+        }
+        .footerr {
+            font-family: Arial, sans-serif;
+            font-style: italic;
+            background-color: #0d2436;
+            font-size: 15px;
+            color: whitesmoke;
+            text-align: center;
+            padding: 10px;
+            margin-top: auto; 
+        }
+
+        #productList {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 20px 0;
+        }
+        .product-card {
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .product-card img {
+            max-width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        .product-card strong {
+            display: block;
+            font-size: 1.2em;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        .product-card p {
+            margin: 5px 0;
+            color: #555;
+        }
+        .product-card .rating {
+            color: gold;
+            margin-bottom: 10px;
+        }
+        .product-card .rating .fas, .product-card .rating .far {
+            font-size: 1.1em;
+            margin-right: 2px;
+        }
+        .product-card .description {
+            font-size: 0.9em;
+            color: #777;
+            text-align: left;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="main">
+        <nav>
+            <a onclick="navigateTo('About')">About</a>
+            <a onclick="navigateTo('ProjectSection')">Projects</a>
+            <a onclick="navigateTo('ContactSection')">Contact</a>
+        </nav>
+        <div class="main-content">
+            <div id="About" class="card">
+                <p class="About-para">Hi! I'm Vijaya Durga Bhavani Thotakura, a passionate AIML student from Aditya College of Engineering and Technology. I enjoy bringing ideas to life through code, especially using Python and web development tools. I'm always eager to learn new technologies and take on creative challenges. Outside of tech, I love reading, drawing, painting, and typing—it keeps me inspired and balanced.</p>
+            </div>
+            <div id="ProjectSection" class="card hidden" >
+                <h1>My Projects</h1>
+                <div class="project-button-container"> 
+                    <button onclick="navigateTo('todo')" class="project-button">To-Do List</button>
+                    <button onclick="navigateTo('catalog')" class="project-button">Product Catalog</button>
+                </div>
+            </div>
+            <div id="todo" class="card hidden">
+                <h1>Todos</h1>
+                <h2>Create <span>Task</span></h2>
+                <input type="text" id="todoInput" placeholder="Enter your to-do item">
+                <button class="project-button add-butn" id="addTaskBtn">Add</button>
+                <h2>My <span>Tasks</span></h2>
+                <ul class="todo-mytask-container" id="todoListContainer"> </ul>
+                <button class="project-button" id="saveBtn">Save Changes</button>
+                <button onclick="navigateTo('ProjectSection')" class="project-button">Back to Projects</button>
+            </div>
+            <div id="catalog" class="card hidden">
+                <div class="catalog-align">
+                    <h1>Product Catalog</h1>
+                    <label for="categoryFilter">Filter by Category</label>
+                    <select id="categoryFilter" onchange="filterProducts()">
+                        <option value="all">All</option>
+                        <option value="electronics">Electronics</option>
+                        <option value="fashion">Fashion</option>
+                        <option value="books">Books</option>
+                    </select>
+                    <label for="priceSort">Sorted By</label>
+                    <select id="priceSort" onchange="sortProducts()">
+                        <option value="low">Low to High</option>
+                        <option value="high">High to Low</option>
+                    </select>
+                </div>
+                <div id="productList">
+                    </div>
+                <button onclick="navigateTo('ProjectSection')" class="project-button">Back to Projects</button>
+            </div>
+            <div id="ContactSection" class="card hidden">
+                <h1>Contact</h1>
+                <ul>
+                    <li>Email: <a href="mailto:vijayathotakura25@gmail.com" class="contact">vijayathotakura25@gmail.com</a></li>
+                    <li>LinkedIn: <a href="https://www.linkedin.com/in/vijaya-durga-bhavani-thotakura-a578a2291/" target="_blank" class="contact">Vijaya-1621</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footerr">
+            <p><i class="fa-regular fa-copyright"></i> 2025 Vijaya Thotakura</p>
+        </div>
+    </div>
+
+    <script>
+        const sectionIds = ['About', 'ProjectSection', 'ContactSection', 'todo', 'catalog'];
+
+        function navigateTo(Section){
+            sectionIds.forEach(id => {
+                let element = document.getElementById(id);
+                if (element){
+                    element.classList.add("hidden");
+                }
+            })
+            let target = document.getElementById(Section);
+            if (target){
+                target.classList.remove("hidden");
+            }
+        }
+
+        // --- To-Do List Logic ---
+        const todoInput = document.getElementById("todoInput");
+        const addTaskBtn = document.getElementById("addTaskBtn");
+        const todoListContainer = document.getElementById("todoListContainer"); 
+        const saveBtn = document.getElementById("saveBtn"); 
+
+        let todoList = JSON.parse(localStorage.getItem("todoList")) || [];
+
+        function saveTodos() {
+            localStorage.setItem("todoList", JSON.stringify(todoList));
+        }
+
+        function toggleTask(checkboxId, labelId, todoId) {
+            const label = document.getElementById(labelId);
+            label.classList.toggle("checked");
+
+            const index = todoList.findIndex(item => "todo" + item.unique === todoId);
+            if (index !== -1) {
+                todoList[index].isChecked = !todoList[index].isChecked;
+                saveTodos();
+            }
+        }
+
+        function deleteTask(todoId) {
+            const element = document.getElementById(todoId);
+            if (element) {
+                todoListContainer.removeChild(element);
+            }
+            todoList = todoList.filter(item => "todo" + item.unique !== todoId);
+            saveTodos();
+        }
+
+        function createTaskElement(todo) {
+            const checkboxId = "checkbox" + todo.unique;
+            const labelId = "label" + todo.unique;
+            const todoId = "todo" + todo.unique;
+
+            const li = document.createElement("li");
+            li.id = todoId;
+            li.className = "d-flex align-items-center mb-2";
+
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.id = checkboxId;
+            checkbox.checked = todo.isChecked;
+            checkbox.onclick = () => toggleTask(checkboxId, labelId, todoId);
+            checkbox.setAttribute('aria-label', `Mark task "${todo.text}" as done`);
+
+            const label = document.createElement("label");
+            label.setAttribute("for", checkboxId);
+            label.id = labelId;
+            label.className = "flex-grow-1 label-element";
+            label.textContent = todo.text;
+            if (todo.isChecked) label.classList.add("checked");
+
+            const deleteIcon = document.createElement("i");
+            deleteIcon.className = "fas fa-trash-alt delete-icon";
+            deleteIcon.title = "Delete task";
+            deleteIcon.onclick = () => deleteTask(todoId);
+            deleteIcon.onkeypress = (e) => { if(e.key === "Enter" || e.key === " ") deleteTask(todoId); };
+
+            li.appendChild(checkbox);
+            li.appendChild(label);
+            li.appendChild(deleteIcon);
+
+            todoListContainer.appendChild(li);
+        }
+
+        function addTask() {
+            const taskText = todoInput.value.trim();
+            if (taskText === "") {
+                alert("Enter valid text");
+                return;
+            }
+
+            const newTodo = {
+                text: taskText,
+                unique: Date.now(),
+                isChecked: false
+            };
+
+            todoList.push(newTodo);
+            createTaskElement(newTodo);
+            todoInput.value = "";
+            todoInput.focus();
+            saveTodos();
+        }
+
+        todoList.forEach(createTaskElement);
+        addTaskBtn.onclick = addTask;
+
+        todoInput.addEventListener("keydown", function(e){
+            if(e.key === "Enter"){
+                addTask();
+                e.preventDefault();
+            }
+        });
+
+        saveBtn.onclick = () => {
+            saveTodos();
+            alert("Tasks saved successfully!");
+        };
+
+        // --- Product Catalog Logic ---
+        const products = [
+            {
+                name: "Wireless Keyboard",
+                category: "electronics",
+                price: 1000,
+                image: "https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=150&q=80",
+                rating: 4.5,
+                description: "A powerful tablet with a stunning display and long battery life. Perfect for work and entertainment."
+            },
+            {
+                name: "Sci-Fi Thriller Novel",
+                category: "books",
+                price: 78.50,
+                image: "https://images.unsplash.com/photo-1553729459-efe14ef6055d?auto=format&fit=crop&w=150&q=80",
+                rating: 4.8,
+                description: "An enthralling science fiction novel that will keep you on the edge of your seat from start to finish."
+            },
+            {
+                name: "Summer Dress",
+                category: "fashion",
+                price: 700.00,
+                image: "https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&w=150&q=80",
+                rating: 3.9,
+                description: "Light and airy summer dress, perfect for warm weather and casual outings."
+            },
+            {
+                name: "Self-Help Bestseller",
+                category: "books",
+                price: 100.00,
+                image: "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=150&q=80",
+                rating: 4.6,
+                description: "Transform your life with this insightful self-help book, packed with practical advice and inspiration."
+            }
+        ];
+
+        function displayProducts(items) {
+            const list = document.getElementById("productList");
+            list.innerHTML = "";
+            items.forEach(p => {
+                const div = document.createElement("div");
+                div.classList.add("product-card");
+
+                const img = document.createElement("img");
+                img.src = p.image;
+                img.alt = p.name;
+                div.appendChild(img);
+
+                const name = document.createElement("strong");
+                name.textContent = p.name;
+                div.appendChild(name);
+
+                const category = document.createElement("p");
+                category.innerHTML = `Category: ${p.category}`;
+                div.appendChild(category);
+
+                const price = document.createElement("p");
+                price.innerHTML = `Price: $${p.price.toFixed(2)}`;
+                div.appendChild(price);
+
+                const ratingDiv = document.createElement("div");
+                ratingDiv.classList.add("rating");
+                const fullStars = Math.floor(p.rating);
+                const hasHalfStar = p.rating % 1 !== 0;
+
+                for (let i = 0; i < 5; i++) {
+                    const star = document.createElement("i");
+                    if (i < fullStars) {
+                        star.classList.add("fas", "fa-star");
+                    } else if (i === fullStars && hasHalfStar) {
+                        star.classList.add("fas", "fa-star-half-alt");
+                    } else {
+                        star.classList.add("far", "fa-star"); 
+                    }
+                    ratingDiv.appendChild(star);
+                }
+                const ratingText = document.createElement("span");
+                ratingText.textContent = ` (${p.rating.toFixed(1)})`;
+                ratingDiv.appendChild(ratingText);
+                div.appendChild(ratingDiv);
+
+                const description = document.createElement("p");
+                description.classList.add("description");
+                description.textContent = p.description;
+                div.appendChild(description);
+
+                list.appendChild(div);
+            });
+        }
+
+        function filterProducts() {
+            const category = document.getElementById("categoryFilter").value;
+            let filtered = category === "all" ? products : products.filter(p => p.category === category);
+            sortAndDisplay(filtered);
+        }
+
+        function sortProducts() {
+            filterProducts(); 
+        }
+
+        function sortAndDisplay(filtered) {
+            const sort = document.getElementById("priceSort").value;
+            if (sort === "low") filtered.sort((a, b) => a.price - b.price);
+            else if (sort === "high") filtered.sort((a, b) => b.price - a.price);
+            displayProducts(filtered);
+        }
+
+        window.onload = () => {
+            displayProducts(products);
+            navigateTo('About'); 
+        };
+    </script>
+</body>
+</html>
